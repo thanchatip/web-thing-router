@@ -12,10 +12,7 @@
             <router-link :to="{ name: 'home'}" class="nav-link">Home</router-link>
           </li>
           <li class="nav-item">
-            <router-link :to="{ name: 'add' }" class="nav-link">Add Event</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link :to="{ name: 'create' }" class="nav-link">Profile</router-link>
+            <router-link :to="{ name: 'Create' }" class="nav-link">Add Event</router-link>
           </li>
         </ul>
       </div>

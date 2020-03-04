@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Event from '../views/eventForm.vue'
+// import Event from '../views/eventForm.vue'
 import Create from '../views/CreateEvent.vue'
 Vue.use(VueRouter)
 
@@ -12,13 +12,13 @@ const routes = [
     component: Home
   },
   {
-    path: '/add',
-    name: 'add',
-    component: Event
+    path: '/addEvent/',
+    name: 'Create',
+    component: Create
   },
   {
-    path: '/addEvent',
-    name: 'create',
+    path: '/edit/:id',
+    name: 'Edit',
     component: Create
   }
 ]

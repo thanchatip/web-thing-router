@@ -22,19 +22,26 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    addEvent ({ commit }, payload) {
-      console.log('saving...')
-      db.collection('Events').add({
-        eventName: payload.eventName,
-        idol: payload.selectedIdol,
-        location: payload.selectedLocation,
-        start: payload.startDate,
-        end: payload.endDate
-      })
+    async addEvent ({ commit }, payload) {
+      try {
+        console.log('saving...')
+        await db.collection('Events').add({
+          eventName: payload.eventName,
+          idol: payload.selectedIdol,
+          location: payload.selectedLocation,
+          start: payload.startDate,
+          end: payload.endDate
+        })
+        console.log('saved')
+        return 'saved'
+      } catch {
+        return 'error'
+      }
     },
-    loadIdol ({ commit }) {
-      const idolList = []
-      db.collection('Person').get().then(function (querySnapshot) {
+    async loadIdol ({ commit }) {
+      try {
+        const idolList = []
+        const querySnapshot = await db.collection('Person').get()
         querySnapshot.forEach(function (doc) {
           const idol = {
             id: doc.id,
@@ -42,12 +49,16 @@ export default new Vuex.Store({
           }
           idolList.push(idol)
         })
-      })
-      commit('SET_IDOL', idolList)
+        commit('SET_IDOL', idolList)
+        return 'loaded'
+      } catch {
+        return 'error'
+      }
     },
-    loadLocation ({ commit }) {
-      const locationList = []
-      db.collection('Locations').get().then(function (querySnapshot) {
+    async loadLocation ({ commit }) {
+      try {
+        const locationList = []
+        const querySnapshot = await db.collection('Locations').get()
         querySnapshot.forEach(function (doc) {
           const location = {
             id: doc.id,
@@ -55,12 +66,16 @@ export default new Vuex.Store({
           }
           locationList.push(location)
         })
-      })
-      commit('SET_LOCATION', locationList)
+        commit('SET_LOCATION', locationList)
+        return 'loaded'
+      } catch {
+        return 'error'
+      }
     },
-    loadEvent ({ commit }) {
-      const eventList = []
-      db.collection('Events').get().then(function (querySnapshot) {
+    async loadEvent ({ commit }) {
+      try {
+        const eventList = []
+        const querySnapshot = await db.collection('Events').get()
         querySnapshot.forEach(function (doc) {
           const event = {
             id: doc.id,
@@ -72,8 +87,46 @@ export default new Vuex.Store({
           }
           eventList.push(event)
         })
-      })
-      commit('SET_EVENT', eventList)
+        commit('SET_EVENT', eventList)
+        return 'loaded'
+      } catch {
+        return 'error'
+      }
+    },
+    async getEventDetail ({ commit }, eventID) {
+      const doc = await db.collection('Events').doc(eventID).get()
+      if (doc.exists) {
+        console.log(doc.data())
+        return doc.data()
+      }
+    },
+    async updateEvent ({ commit }, event) {
+      try {
+        await db.collection('Events').doc(event.id).set({
+          eventName: event.eventName,
+          idol: event.idol,
+          location: event.location,
+          start: event.start,
+          end: event.end
+        })
+        console.log('updated')
+        return 'updated'
+      } catch {
+        console.log('update failed')
+        return 'error'
+      }
+    },
+    async deleteEvent ({ commit }, eventID) {
+      try {
+        await db.collection('Events')
+          .doc(eventID)
+          .delete()
+        console.log('deleted')
+        return 'deleted'
+      } catch {
+        console.log('error')
+        return 'error'
+      }
     }
   },
   getters: {

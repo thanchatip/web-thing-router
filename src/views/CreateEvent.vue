@@ -26,7 +26,7 @@
     <h5>End Date</h5>
     <input type="date" id="endDate" v-model="event.endDate"><br><br>
         <button class="btn btn-primary" >Cancel</button>&nbsp;
-      <button class="btn btn-primary" @click="addEvent(event)">Create Event</button>
+      <button class="btn btn-primary" @click="save(event)">Save</button>
             </div>
             </div>
       </div>
@@ -50,13 +50,23 @@ export default {
         selectedEndDate: null,
         startDate: null,
         endDate: null
-      }
+      },
+      eventID: undefined
 
     }
   },
-  mounted () {
-    this.loadIdol()
-    this.loadLocation()
+  async mounted () {
+    const eventID = this.$route.params.id
+    console.log(eventID)
+    if (eventID !== undefined) {
+      const event = await this.getEventDetail(eventID)
+      this.event.eventName = event.eventName
+      await this.loadIdol()
+      await this.loadLocation()
+    } else {
+      await this.loadIdol()
+      await this.loadLocation()
+    }
   },
   computed: {
     ...mapGetters({
@@ -68,8 +78,19 @@ export default {
     ...mapActions({
       addEvent: 'addEvent',
       loadIdol: 'loadIdol',
-      loadLocation: 'loadLocation'
-    })
+      loadLocation: 'loadLocation',
+      getEventDetail: 'getEventDetail',
+      updateEvent: 'updateEvent'
+    }),
+    async save (event) {
+      const result = await this.updateEvent({
+        eventName: this.event.eventName
+      })
+      if (result === 'updated') { this.$router.push({ name: 'home' }) } else {
+        const result = await this.addEvent(event)
+        if (result === 'saved') { this.$router.push({ name: 'home' }) }
+      }
+    }
   }
 }
 </script>
