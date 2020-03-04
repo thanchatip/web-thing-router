@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    event: [],
+    events: [],
     idols: [],
     locations: []
   },
@@ -16,10 +16,14 @@ export default new Vuex.Store({
     },
     'SET_LOCATION' (state, locations) {
       state.locations = locations
+    },
+    'SET_EVENT' (state, events) {
+      state.events = events
     }
   },
   actions: {
     addEvent ({ commit }, payload) {
+      console.log('saving...')
       db.collection('Events').add({
         eventName: payload.eventName,
         idol: payload.selectedIdol,
@@ -53,6 +57,23 @@ export default new Vuex.Store({
         })
       })
       commit('SET_LOCATION', locationList)
+    },
+    loadEvent ({ commit }) {
+      const eventList = []
+      db.collection('Events').get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          const event = {
+            id: doc.id,
+            eventName: doc.data().eventName,
+            idol: doc.data().idol,
+            location: doc.data().location,
+            start: doc.data().start,
+            end: doc.data().end
+          }
+          eventList.push(event)
+        })
+      })
+      commit('SET_EVENT', eventList)
     }
   },
   getters: {
@@ -61,6 +82,9 @@ export default new Vuex.Store({
     },
     allLocations (state) {
       return state.locations
+    },
+    allEvents (state) {
+      return state.events
     }
   }
 })

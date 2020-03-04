@@ -4,16 +4,16 @@
         <div class="card-body">
             <div class="card-title">
                 <label>Event Name</label>
-                <input v-model="eventName" type="text" class="form-control">
+                <input v-model="event.eventName" type="text" class="form-control">
                 <small class="form-text text-muted">Required*</small>
                 <label>Idol</label><br>
-        <select v-model="selectedIdol" id="idol" >
+        <select v-model="event.selectedIdol" id="idol" >
       <option value="null">Please Select Idol</option>
       <option v-for="(idol) in allIdols" v-bind:key="idol.id" value:key="idol.name"> {{idol.name}} </option>
     </select>
     <br><br>
     <label>Location</label><br>
-    <select v-model="selectedLocation" id="location">
+    <select v-model="event.selectedLocation" id="location">
       <option value="null"> Please Select Location </option>
       <option v-for="(location) in allLocations" v-bind:key="location.id" value:key="location.locationName">
         {{location.locationName}}
@@ -22,11 +22,11 @@
     <label for="startDate">
       <h5> Start Date </h5>
     </label><br>
-    <input type="date" id="startDate" v-model="startDate"><br><br>
+    <input type="date" id="startDate" v-model="event.startDate"><br><br>
     <h5>End Date</h5>
-    <input type="date" id="endDate" v-model="endDate"><br><br>
+    <input type="date" id="endDate" v-model="event.endDate"><br><br>
         <button class="btn btn-primary" >Cancel</button>&nbsp;
-      <button class="btn btn-primary" >Create Event</button>
+      <button class="btn btn-primary" @click="addEvent(event)">Create Event</button>
             </div>
             </div>
       </div>
@@ -39,16 +39,18 @@ export default {
   name: 'Create',
   data () {
     return {
-      event: [],
-      eventName: '',
-      locations: '',
-      idols: '',
-      selectedIdol: null,
-      selectedLocation: null,
-      selectedStartDate: null,
-      selectedEndDate: null,
-      startDate: null,
-      endDate: null
+      event:
+      {
+        eventName: '',
+        locations: '',
+        idols: '',
+        selectedIdol: null,
+        selectedLocation: null,
+        selectedStartDate: null,
+        selectedEndDate: null,
+        startDate: null,
+        endDate: null
+      }
 
     }
   },
